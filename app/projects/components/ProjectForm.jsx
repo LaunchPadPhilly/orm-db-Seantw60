@@ -25,18 +25,18 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
   function validate() {
     const newErrors = {};
 
-    if (!title.trim()) newErrors.title = "Title is required.";
-    if (!description.trim()) newErrors.description = "Description is required.";
-    if (technologies.length === 0) newErrors.technologies = "At least one technology is required.";
+    if (!title.trim()) newErrors.title = "Title is required";
+    if (!description.trim()) newErrors.description = "Description is required";
+    if (technologies.length === 0) newErrors.technologies = "At least one technology is required";
 
     if (imageUrl && !urlRegex.test(imageUrl)) {
-      newErrors.imageUrl = "Invalid image URL format.";
+      newErrors.imageUrl = "Please enter a valid URL";
     }
     if (projectUrl && !urlRegex.test(projectUrl)) {
-      newErrors.projectUrl = "Invalid project URL format.";
+      newErrors.projectUrl = "Please enter a valid URL";
     }
     if (githubUrl && !urlRegex.test(githubUrl)) {
-      newErrors.githubUrl = "Invalid GitHub URL format.";
+      newErrors.githubUrl = "Please enter a valid URL";
     }
 
     return newErrors;
@@ -59,9 +59,9 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
       await onSubmit({
         title,
         description,
-        imageUrl: imageUrl || null,
-        projectUrl: projectUrl || null,
-        githubUrl: githubUrl || null,
+        imageUrl,
+        projectUrl,
+        githubUrl,
         technologies,
       });
 
@@ -83,7 +83,7 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
   return (
     <div className="inset-0 bg-black bg-opacity-40 flex justify-center items-center p-6 z-50">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-lg">
-        <h2 className="text-2xl font-bold mb-4">Create New Project</h2>
+        <h2 className="text-2xl font-bold mb-4">Add New Project</h2>
 
         {/* SUBMIT ERROR */}
         {errors.submit && (
@@ -94,10 +94,11 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
           
           {/* TITLE */}
           <div>
-            <label className="block font-medium">Title</label>
+            <label htmlFor="title" className="block font-medium">Project Title</label>
             <input 
+              id="title"
               type="text"
-              className="w-full border rounded p-2"
+              className={`w-full border rounded p-2 ${errors.title ? 'border-red-500' : ''}`}
               value={title}
               onChange={e => setTitle(e.target.value)}
             />
@@ -108,9 +109,10 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
 
           {/* DESCRIPTION */}
           <div>
-            <label className="block font-medium">Description</label>
+            <label htmlFor="description" className="block font-medium">Description</label>
             <textarea
-              className="w-full border rounded p-2"
+              id="description"
+              className={`w-full border rounded p-2 ${errors.description ? 'border-red-500' : ''}`}
               value={description}
               onChange={e => setDescription(e.target.value)}
             />
@@ -121,8 +123,9 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
 
           {/* IMAGE URL */}
           <div>
-            <label className="block font-medium">Image URL</label>
+            <label htmlFor="imageUrl" className="block font-medium">Image URL</label>
             <input 
+              id="imageUrl"
               type="text"
               className="w-full border rounded p-2"
               value={imageUrl}
@@ -135,8 +138,9 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
 
           {/* PROJECT URL */}
           <div>
-            <label className="block font-medium">Live Project URL</label>
+            <label htmlFor="projectUrl" className="block font-medium">Live Project URL</label>
             <input 
+              id="projectUrl"
               type="text"
               className="w-full border rounded p-2"
               value={projectUrl}
@@ -149,8 +153,9 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
 
           {/* GITHUB URL */}
           <div>
-            <label className="block font-medium">GitHub URL</label>
+            <label htmlFor="githubUrl" className="block font-medium">GitHub URL</label>
             <input 
+              id="githubUrl"
               type="text"
               className="w-full border rounded p-2"
               value={githubUrl}
@@ -191,7 +196,7 @@ export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
               }`}
               disabled={loading}
             >
-              {loading ? "Submitting..." : "Submit"}
+              {loading ? "Creating Project..." : "Create Project"}
             </button>
           </div>
 

@@ -1,19 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 describe('Database Schema and Operations', () => {
-  // Clean up test data before and after each test
-  beforeEach(async () => {
-    await prisma.project.deleteMany({
-      where: {
-        title: { contains: "Test DB" }
-      }
-    });
-  });
-
-  afterEach(async () => {
+  // Clean up ALL test data after all tests complete
+  afterAll(async () => {
     await prisma.project.deleteMany({
       where: {
         title: { contains: "Test DB" }
@@ -120,7 +112,7 @@ describe('Database Schema and Operations', () => {
     it('should update updatedAt timestamp on record modification', async () => {
       const project = await prisma.project.create({
         data: {
-          title: "ProjectUpdateTimestamp",
+          title: "Test DB Project Update",
           description: "Testing update functionality",
           technologies: ["Vue.js"]
         }
@@ -133,79 +125,62 @@ describe('Database Schema and Operations', () => {
 
       const updatedProject = await prisma.project.update({
         where: { id: project.id },
-        data: { title: "ProjectUpdateTimestamp Updated" }
+        data: { title: "Test DB Project Updated" }
       });
 
       expect(updatedProject.updatedAt.getTime()).toBeGreaterThan(originalUpdatedAt.getTime());
       expect(updatedProject.createdAt.getTime()).toBe(project.createdAt.getTime());
-      
-      // Clean up
-      await prisma.project.delete({ where: { id: project.id } });
     });
   });
 
   describe('Database Queries', () => {
-    let queryProjects = [];
-
     beforeEach(async () => {
-      // Clean up any existing query test data
-      await prisma.project.deleteMany({
-        where: {
-          title: { contains: "DBQuery" }
-        }
-      });
-      
-      // Create fresh test data for query tests
-      queryProjects = await Promise.all([
-        prisma.project.create({
-          data: {
-            title: "DBQuery Project 1",
+      // Create test data for query tests
+      await prisma.project.createMany({
+        data: [
+          {
+            title: "Test DB Query Project 1",
             description: "First query test project",
             technologies: ["React", "Node.js"]
-          }
-        }),
-        prisma.project.create({
-          data: {
-            title: "DBQuery Project 2",
+          },
+          {
+            title: "Test DB Query Project 2",
             description: "Second query test project",
             technologies: ["Vue.js", "Express"]
-          }
-        }),
-        prisma.project.create({
-          data: {
-            title: "DBQuery Project 3",
+          },
+          {
+            title: "Test DB Query Project 3",
             description: "Third query test project",
             technologies: ["Angular", "NestJS"]
           }
-        })
-      ]);
+        ]
+      });
     });
 
     afterEach(async () => {
-      // Clean up after tests
+      // Clean up this block's test data after each test
       await prisma.project.deleteMany({
         where: {
-          title: { contains: "DBQuery" }
+          title: { contains: "Test DB Query" }
         }
       });
-      queryProjects = [];
     });
 
     it('should fetch all projects with findMany', async () => {
       const projects = await prisma.project.findMany({
         where: {
-          title: { contains: "DBQuery" }
+          title: { contains: "Test DB Query" }
         }
       });
 
       expect(projects.length).toBe(3);
-      expect(projects.every(p => p.title.includes("DBQuery"))).toBe(true);
+      expect(projects.every(p => p.title.includes("Test DB Query"))).toBe(true);
     });
 
     it('should fetch projects ordered by creation date (newest first)', async () => {
       const projects = await prisma.project.findMany({
         where: {
-          title: { contains: "DBQuery" }
+          title: { contains: "Test DB Query" }
         },
         orderBy: { createdAt: 'desc' }
       });
@@ -220,13 +195,19 @@ describe('Database Schema and Operations', () => {
     });
 
     it('should fetch a single project with findUnique', async () => {
+      const allProjects = await prisma.project.findMany({
+        where: { title: { contains: "Test DB Query" } }
+      });
+      
+      const firstProject = allProjects[0];
+      
       const foundProject = await prisma.project.findUnique({
-        where: { id: queryProjects[0].id }
+        where: { id: firstProject.id }
       });
 
       expect(foundProject).not.toBeNull();
-      expect(foundProject.id).toBe(queryProjects[0].id);
-      expect(foundProject.title).toBe(queryProjects[0].title);
+      expect(foundProject.id).toBe(firstProject.id);
+      expect(foundProject.title).toBe(firstProject.title);
     });
 
     it('should return null for findUnique with non-existent id', async () => {
@@ -305,15 +286,15 @@ describe('Database Schema and Operations', () => {
       ).rejects.toThrow();
     });
 
-    it('should accept missing technologies field', async () => {
-      const project = await prisma.project.create({
-        data: {
-          title: "Missing technologies",
-          description: "This project has no tech stack"
-        }
-      });
-      
-      expect(project.technologies).toEqual([]);
+    it('should enforce required fields (technologies)', async () => {
+      await expect(
+        prisma.project.create({
+          data: {
+            title: "Missing technologies",
+            description: "This project has no tech stack"
+          }
+        })
+      ).rejects.toThrow();
     });
 
     it('should accept empty array for technologies', async () => {

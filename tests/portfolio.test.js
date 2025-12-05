@@ -34,43 +34,44 @@ describe('Week 1 Portfolio - Component Tests', () => {
   it('should have Navbar component file', () => {
     const navbarPath = path.join(process.cwd(), 'app/components/Navbar.jsx')
     const exists = fs.existsSync(navbarPath)
-    
+
     if (!exists) {
-      console.warn('⚠️  Navbar.js not found. Create it in app/components/')
+      console.warn('⚠️  Navbar.jsx not found. Create it in app/components/')
     }
-    
+
     expect(exists, 'Navbar component is required').toBe(true)
   })
 
   it('should have Footer component file', () => {
     const footerPath = path.join(process.cwd(), 'app/components/Footer.jsx')
     const exists = fs.existsSync(footerPath)
-    
+
     if (!exists) {
-      console.warn('⚠️  Footer.js not found. Create it in app/components/')
+      console.warn('⚠️  Footer.jsx not found. Create it in app/components/')
     }
-    
+
     expect(exists, 'Footer component is required').toBe(true)
   })
+
   it('should have ProjectForm component file', () => {
     const projectFormPath = path.join(process.cwd(), 'app/projects/components/ProjectForm.jsx')
     const exists = fs.existsSync(projectFormPath)
-    
+
     if (!exists) {
       console.warn('⚠️  ProjectForm.jsx not found. Create it in app/projects/components/')
     }
-    
+
     expect(exists, 'ProjectForm component is required for project creation').toBe(true)
   })
 
   it('should have TechnologyInput component file', () => {
     const technologyInputPath = path.join(process.cwd(), 'app/projects/components/TechnologyInput.jsx')
     const exists = fs.existsSync(technologyInputPath)
-    
+
     if (!exists) {
       console.warn('⚠️  TechnologyInput.jsx not found. Create it in app/projects/components/')
     }
-    
+
     expect(exists, 'TechnologyInput component is required for technology selection').toBe(true)
   })
 })
@@ -88,15 +89,15 @@ describe('Week 1 Portfolio - Code Quality Tests', () => {
       const fullPath = path.join(process.cwd(), file)
       if (fs.existsSync(fullPath)) {
         const content = fs.readFileSync(fullPath, 'utf-8')
-        
+
         // Check if file has navigation links
         const hasLinks = content.includes('href=') || content.includes('to=')
-        
+
         if (hasLinks) {
           // Should import Link from next/link
-          const hasLinkImport = content.includes("from 'next/link'") || 
-                                content.includes('from "next/link"')
-          
+          const hasLinkImport = content.includes("from 'next/link'") ||
+            content.includes('from "next/link"')
+
           if (!hasLinkImport) {
             console.warn(`⚠️  ${file} should use Link component from 'next/link'`)
           }
@@ -117,17 +118,17 @@ describe('Week 1 Portfolio - Code Quality Tests', () => {
       const fullPath = path.join(process.cwd(), file)
       if (fs.existsSync(fullPath)) {
         const content = fs.readFileSync(fullPath, 'utf-8')
-        
+
         // Check if file has image tags
         const hasImgTag = content.includes('<img')
-        
+
         if (hasImgTag) {
           console.warn(`⚠️  ${file} should use <Image> component instead of <img> tag`)
-          
+
           // Should import Image from next/image
-          const hasImageImport = content.includes("from 'next/image'") || 
-                                  content.includes('from "next/image"')
-          
+          const hasImageImport = content.includes("from 'next/image'") ||
+            content.includes('from "next/image"')
+
           expect(hasImageImport, `${file} should import Image from 'next/image'`).toBe(true)
         }
       }
@@ -146,10 +147,10 @@ describe('Week 1 Portfolio - Code Quality Tests', () => {
       const fullPath = path.join(process.cwd(), file)
       if (fs.existsSync(fullPath)) {
         const content = fs.readFileSync(fullPath, 'utf-8')
-        
+
         const hasExportDefault = content.includes('export default function') ||
-                                 content.includes('export default')
-        
+          content.includes('export default')
+
         expect(hasExportDefault, `${file} must have 'export default'`).toBe(true)
       }
     })
@@ -161,7 +162,7 @@ describe('Week 1 Portfolio - Content Tests', () => {
     const layoutPath = path.join(process.cwd(), 'app/layout.jsx')
     if (fs.existsSync(layoutPath)) {
       const content = fs.readFileSync(layoutPath, 'utf-8')
-      
+
       expect(content.includes('<html'), 'layout.jsx must include <html> tag').toBe(true)
       expect(content.includes('<body'), 'layout.jsx must include <body> tag').toBe(true)
       expect(content.includes('{children}'), 'layout.jsx must include {children}').toBe(true)
@@ -172,7 +173,7 @@ describe('Week 1 Portfolio - Content Tests', () => {
     const layoutPath = path.join(process.cwd(), 'app/layout.jsx')
     if (fs.existsSync(layoutPath)) {
       const content = fs.readFileSync(layoutPath, 'utf-8')
-      
+
       const hasMetadata = content.includes('metadata') || content.includes('title')
       expect(hasMetadata, 'layout.jsx should export metadata').toBe(true)
     }
@@ -188,9 +189,9 @@ describe('Week 1 Portfolio - Deployment Readiness', () => {
   it('should have package.json with required scripts', () => {
     const packagePath = path.join(process.cwd(), 'package.json')
     expect(fs.existsSync(packagePath)).toBe(true)
-    
+
     const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'))
-    
+
     expect(packageJson.scripts.dev).toBeDefined()
     expect(packageJson.scripts.build).toBeDefined()
     expect(packageJson.scripts.start).toBeDefined()

@@ -34,6 +34,11 @@ export async function POST(request) {
       );
     }
 
+    // Validate technologies is provided and is an array
+    if (!Array.isArray(technologies)) {
+      throw new Error('Technologies must be an array');
+    }
+
     const project = await prisma.project.create({
       data: {
         title,
@@ -41,7 +46,7 @@ export async function POST(request) {
         imageUrl: imageUrl || null,
         projectUrl: projectUrl || null,
         githubUrl: githubUrl || null,
-        technologies: Array.isArray(technologies) ? technologies : []
+        technologies
       }
     });
 

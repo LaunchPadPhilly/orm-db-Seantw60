@@ -13,17 +13,8 @@ const testProject = {
   technologies: ["Next.js", "Tailwind CSS", "React"]
 };
 
-describe('API Routes - Projects Data Handling', () => {
-  // Clean up test data before and after each test
-  beforeEach(async () => {
-    // Clean up any existing test data
-    await prisma.project.deleteMany({
-      where: {
-        title: { contains: "Test" }
-      }
-    });
-  });
-
+describe('API Routes - Projects', () => {
+  // Clean up test data after each test
   afterEach(async () => {
     // Clean up test data after each test
     await prisma.project.deleteMany({
@@ -33,77 +24,36 @@ describe('API Routes - Projects Data Handling', () => {
     });
   });
 
-  describe('Project Creation (POST)', () => {
-    it('should create a new project with valid data', async () => {
-      const project = await prisma.project.create({
+  describe('GET /api/projects', () => {
+    it('should return an empty array when no projects exist', async () => {
+      const response = await fetch('http://localhost:3000/api/projects');
+      expect(response.status).toBe(200);
+      
+      const data = await response.json();
+      expect(Array.isArray(data)).toBe(true);
+    });
+
+    it('should return all projects when projects exist', async () => {
+      // First create a test project
+      const createdProject = await prisma.project.create({
         data: testProject
       });
 
-      expect(project.id).toBeDefined();
-      expect(project.title).toBe(testProject.title);
-      expect(project.description).toBe(testProject.description);
-      expect(project.imageUrl).toBe(testProject.imageUrl);
-      expect(project.projectUrl).toBe(testProject.projectUrl);
-      expect(project.githubUrl).toBe(testProject.githubUrl);
-      expect(Array.isArray(project.technologies)).toBe(true);
-      expect(project.technologies).toEqual(testProject.technologies);
-      expect(project.createdAt).toBeDefined();
-      expect(project.updatedAt).toBeDefined();
-    });
-
-    it('should handle missing optional fields', async () => {
-      const minimalProject = {
-        title: "Test Minimal Project",
-        description: "A minimal test project",
-        technologies: ["JavaScript"]
-      };
-
-      const project = await prisma.project.create({
-        data: minimalProject
-      });
-
-      expect(project.title).toBe(minimalProject.title);
-      expect(project.description).toBe(minimalProject.description);
-      expect(project.imageUrl).toBeNull();
-      expect(project.projectUrl).toBeNull();
-      expect(project.githubUrl).toBeNull();
-    });
-
-    it('should require title and description', async () => {
-      await expect(
-        prisma.project.create({
-          data: {
-            description: "Missing title",
-            technologies: ["JavaScript"]
-          }
-        })
-      ).rejects.toThrow();
-    });
-  });
-
-  describe('Project Retrieval (GET)', () => {
-    it('should retrieve all projects', async () => {
-      const project1 = await prisma.project.create({
-        data: { ...testProject, title: "Test Project 1" }
-      });
+      const response = await fetch('http://localhost:3000/api/projects');
+      expect(response.status).toBe(200);
       
-      const project2 = await prisma.project.create({
-        data: { ...testProject, title: "Test Project 2" }
-      });
-
-      const projects = await prisma.project.findMany({
-        where: {
-          title: { contains: "Test Project" }
-        }
-      });
-
-      expect(Array.isArray(projects)).toBe(true);
-      expect(projects.length).toBeGreaterThanOrEqual(2);
-      expect(projects.some(p => p.id === project1.id)).toBe(true);
-      expect(projects.some(p => p.id === project2.id)).toBe(true);
+      const data = await response.json();
+      expect(Array.isArray(data)).toBe(true);
+      expect(data.length).toBeGreaterThanOrEqual(1);
+      
+      const foundProject = data.find(p => p.id === createdProject.id);
+      expect(foundProject).toBeDefined();
+      expect(foundProject.title).toBe(testProject.title);
+      expect(foundProject.description).toBe(testProject.description);
     });
 
     it('should return projects in descending order by creation date', async () => {
+      // Create multiple test projects
       const project1 = await prisma.project.create({
         data: { ...testProject, title: "Test Project 1" }
       });
@@ -115,14 +65,10 @@ describe('API Routes - Projects Data Handling', () => {
         data: { ...testProject, title: "Test Project 2" }
       });
 
-      const projects = await prisma.project.findMany({
-        where: {
-          title: { contains: "Test Project" }
-        },
-        orderBy: { createdAt: 'desc' }
-      });
-
-      const testProjects = projects.filter(p => p.title.includes("Test Project"));
+      const response = await fetch('http://localhost:3000/api/projects');
+      const data = await response.json();
+      
+      const testProjects = data.filter(p => p.title.includes("Test Project"));
       expect(testProjects.length).toBe(2);
       
       // Should be in descending order (newest first)
@@ -130,32 +76,108 @@ describe('API Routes - Projects Data Handling', () => {
         new Date(testProjects[1].createdAt).getTime()
       );
     });
+  });
 
-    it('should retrieve a specific project by ID', async () => {
+  describe('POST /api/projects', () => {
+    it('should create a new project with valid data', async () => {
+      const response = await fetch('http://localhost:3000/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(testProject)
+      });
+
+      expect(response.status).toBe(201);
+      
+      const data = await response.json();
+      expect(data.title).toBe(testProject.title);
+      expect(data.description).toBe(testProject.description);
+      expect(data.imageUrl).toBe(testProject.imageUrl);
+      expect(data.projectUrl).toBe(testProject.projectUrl);
+      expect(data.githubUrl).toBe(testProject.githubUrl);
+      expect(Array.isArray(data.technologies)).toBe(true);
+      expect(data.technologies).toEqual(testProject.technologies);
+      expect(data.id).toBeDefined();
+      expect(data.createdAt).toBeDefined();
+      expect(data.updatedAt).toBeDefined();
+    });
+
+    it('should handle missing optional fields', async () => {
+      const minimalProject = {
+        title: "Test Minimal Project",
+        description: "A minimal test project",
+        technologies: ["JavaScript"]
+      };
+
+      const response = await fetch('http://localhost:3000/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(minimalProject)
+      });
+
+      expect(response.status).toBe(201);
+      
+      const data = await response.json();
+      expect(data.title).toBe(minimalProject.title);
+      expect(data.description).toBe(minimalProject.description);
+      expect(data.imageUrl).toBeNull();
+      expect(data.projectUrl).toBeNull();
+      expect(data.githubUrl).toBeNull();
+    });
+
+    it('should return 400 for missing required fields', async () => {
+      const invalidProject = {
+        description: "Missing title"
+      };
+
+      const response = await fetch('http://localhost:3000/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(invalidProject)
+      });
+
+      expect(response.status).toBe(400);
+    });
+  });
+
+  describe('GET /api/projects/[id]', () => {
+    it('should return a specific project by ID', async () => {
       const createdProject = await prisma.project.create({
         data: testProject
       });
 
-      const foundProject = await prisma.project.findUnique({
-        where: { id: createdProject.id }
-      });
-
-      expect(foundProject).toBeDefined();
-      expect(foundProject.id).toBe(createdProject.id);
-      expect(foundProject.title).toBe(testProject.title);
-      expect(foundProject.description).toBe(testProject.description);
+      const response = await fetch(`http://localhost:3000/api/projects/${createdProject.id}`);
+      expect(response.status).toBe(200);
+      
+      const data = await response.json();
+      expect(data.id).toBe(createdProject.id);
+      expect(data.title).toBe(testProject.title);
+      expect(data.description).toBe(testProject.description);
     });
 
-    it('should return null for non-existent project ID', async () => {
-      const project = await prisma.project.findUnique({
-        where: { id: 99999 }
-      });
+    it('should return 404 for non-existent project', async () => {
+      const response = await fetch('http://localhost:3000/api/projects/99999');
+      expect(response.status).toBe(404);
+      
+      const data = await response.json();
+      expect(data.error).toBe('Project not found');
+    });
 
-      expect(project).toBeNull();
+    it('should return 400 for invalid ID', async () => {
+      const response = await fetch('http://localhost:3000/api/projects/invalid-id');
+      expect(response.status).toBe(400);
+      
+      const data = await response.json();
+      expect(data.error).toBe('Invalid project ID');
     });
   });
 
-  describe('Project Updates (PUT)', () => {
+  describe('PUT /api/projects/[id]', () => {
     it('should update an existing project', async () => {
       const createdProject = await prisma.project.create({
         data: testProject
@@ -167,54 +189,66 @@ describe('API Routes - Projects Data Handling', () => {
         technologies: ["Next.js", "TypeScript"]
       };
 
-      const updated = await prisma.project.update({
-        where: { id: createdProject.id },
-        data: updatedData
+      const response = await fetch(`http://localhost:3000/api/projects/${createdProject.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData)
       });
 
-      expect(updated.id).toBe(createdProject.id);
-      expect(updated.title).toBe(updatedData.title);
-      expect(updated.description).toBe(updatedData.description);
-      expect(updated.technologies).toEqual(updatedData.technologies);
+      expect(response.status).toBe(200);
+      
+      const data = await response.json();
+      expect(data.title).toBe(updatedData.title);
+      expect(data.description).toBe(updatedData.description);
+      expect(data.technologies).toEqual(updatedData.technologies);
+      expect(data.id).toBe(createdProject.id);
     });
 
-    it('should not update non-existent project', async () => {
+    it('should return 404 for updating non-existent project', async () => {
       const updatedData = { title: "Updated Title" };
 
-      await expect(
-        prisma.project.update({
-          where: { id: 99999 },
-          data: updatedData
-        })
-      ).rejects.toThrow();
+      const response = await fetch('http://localhost:3000/api/projects/99999', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData)
+      });
+
+      expect(response.status).toBe(404);
     });
   });
 
-  describe('Project Deletion (DELETE)', () => {
+  describe('DELETE /api/projects/[id]', () => {
     it('should delete an existing project', async () => {
       const createdProject = await prisma.project.create({
         data: testProject
       });
 
-      const deleted = await prisma.project.delete({
-        where: { id: createdProject.id }
+      const response = await fetch(`http://localhost:3000/api/projects/${createdProject.id}`, {
+        method: 'DELETE'
       });
 
-      expect(deleted.id).toBe(createdProject.id);
+      expect(response.status).toBe(200);
+      
+      const data = await response.json();
+      expect(data.message).toBe('Project deleted successfully');
 
       // Verify project is actually deleted
-      const verifyDeleted = await prisma.project.findUnique({
+      const deletedProject = await prisma.project.findUnique({
         where: { id: createdProject.id }
       });
-      expect(verifyDeleted).toBeNull();
+      expect(deletedProject).toBeNull();
     });
 
-    it('should not delete non-existent project', async () => {
-      await expect(
-        prisma.project.delete({
-          where: { id: 99999 }
-        })
-      ).rejects.toThrow();
+    it('should return 404 for deleting non-existent project', async () => {
+      const response = await fetch('http://localhost:3000/api/projects/99999', {
+        method: 'DELETE'
+      });
+
+      expect(response.status).toBe(404);
     });
   });
 });

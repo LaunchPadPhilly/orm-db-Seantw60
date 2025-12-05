@@ -33,6 +33,13 @@ export default function TechnologyInput({ technologies = [], onChange, error }) 
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTechnology(input);
+    }
+  };
+
   return (
     <div>
       {/* Input Field */}
@@ -42,10 +49,11 @@ export default function TechnologyInput({ technologies = [], onChange, error }) 
           className={`flex-grow border rounded p-2 ${
             error ? "border-red-500" : "border-gray-300"
           }`}
-          placeholder="Add a technology..."
+          placeholder="Type a technology"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
+          onKeyPress={handleKeyPress}
         />
 
         <button
@@ -86,16 +94,24 @@ export default function TechnologyInput({ technologies = [], onChange, error }) 
       <div className="mt-4">
         <p className="font-medium mb-2">Quick Add:</p>
         <div className="flex flex-wrap gap-2">
-          {quickAddList.map((tech) => (
-            <button
-              key={tech}
-              type="button"
-              onClick={() => addTechnology(tech)}
-              className="px-3 py-1 text-sm border rounded hover:bg-gray-100"
-            >
-              {tech}
-            </button>
-          ))}
+          {quickAddList.map((tech) => {
+            const isSelected = technologies.includes(tech);
+            return (
+              <button
+                key={tech}
+                type="button"
+                disabled={isSelected}
+                onClick={() => addTechnology(tech)}
+                className={`px-3 py-1 text-sm border rounded ${
+                  isSelected
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'hover:bg-gray-100'
+                }`}
+              >
+                {tech}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
