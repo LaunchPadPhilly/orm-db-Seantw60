@@ -12,15 +12,14 @@ export default function Home() {
         </h1>
 
         <p className="text-xl text-gray-600 mb-12">
-          ✏️ A short introduction about who you are.  
-          (Example: “Im a front-end developer passionate about creating clean UI, building apps, and designing interactive projects.”)
+          ✏️ A passionate writer turned aspiring web developer building modern web experiences.
         </p>
 
         {/* Optional placeholder image (you can replace it later) */}
         <div className="flex justify-center mb-12">
           <div className="relative w-64 h-64 rounded-xl overflow-hidden shadow-lg border-2 border-blue-200">
             <Image
-              src="/profile/home-placeholder.png"   // Put any image you want here
+              src="/Ascension.png"   // Put any image you want here
               alt="Portfolio Visual"
               fill
               className="object-cover"

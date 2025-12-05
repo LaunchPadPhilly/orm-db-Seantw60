@@ -6,10 +6,10 @@ import path from 'path'
 describe('Week 1 Portfolio - File Structure Tests', () => {
   it('should have all required page files', () => {
     const requiredPages = [
-      'app/page.js',
-      'app/about/page.js',
-      'app/projects/page.js',
-      'app/contact/page.js',
+      'app/page.jsx',
+      'app/about/page.jsx',
+      'app/projects/page.jsx',
+      'app/contact/page.jsx',
     ]
 
     requiredPages.forEach(pagePath => {
@@ -19,8 +19,8 @@ describe('Week 1 Portfolio - File Structure Tests', () => {
     })
   })
 
-  it('should have layout.js file', () => {
-    const layoutPath = path.join(process.cwd(), 'app/layout.js')
+  it('should have layout.jsx file', () => {
+    const layoutPath = path.join(process.cwd(), 'app/layout.jsx')
     expect(fs.existsSync(layoutPath)).toBe(true)
   })
 
@@ -32,7 +32,7 @@ describe('Week 1 Portfolio - File Structure Tests', () => {
 
 describe('Week 1 Portfolio - Component Tests', () => {
   it('should have Navbar component file', () => {
-    const navbarPath = path.join(process.cwd(), 'app/components/Navbar.js')
+    const navbarPath = path.join(process.cwd(), 'app/components/Navbar.jsx')
     const exists = fs.existsSync(navbarPath)
     
     if (!exists) {
@@ -43,7 +43,7 @@ describe('Week 1 Portfolio - Component Tests', () => {
   })
 
   it('should have Footer component file', () => {
-    const footerPath = path.join(process.cwd(), 'app/components/Footer.js')
+    const footerPath = path.join(process.cwd(), 'app/components/Footer.jsx')
     const exists = fs.existsSync(footerPath)
     
     if (!exists) {
@@ -52,40 +52,36 @@ describe('Week 1 Portfolio - Component Tests', () => {
     
     expect(exists, 'Footer component is required').toBe(true)
   })
-<<<<<<< HEAD
-=======
-
   it('should have ProjectForm component file', () => {
-    const projectFormPath = path.join(process.cwd(), 'app/projects/components/ProjectForm.js')
+    const projectFormPath = path.join(process.cwd(), 'app/projects/components/ProjectForm.jsx')
     const exists = fs.existsSync(projectFormPath)
     
     if (!exists) {
-      console.warn('⚠️  ProjectForm.js not found. Create it in app/projects/components/')
+      console.warn('⚠️  ProjectForm.jsx not found. Create it in app/projects/components/')
     }
     
     expect(exists, 'ProjectForm component is required for project creation').toBe(true)
   })
 
   it('should have TechnologyInput component file', () => {
-    const technologyInputPath = path.join(process.cwd(), 'app/projects/components/TechnologyInput.js')
+    const technologyInputPath = path.join(process.cwd(), 'app/projects/components/TechnologyInput.jsx')
     const exists = fs.existsSync(technologyInputPath)
     
     if (!exists) {
-      console.warn('⚠️  TechnologyInput.js not found. Create it in app/projects/components/')
+      console.warn('⚠️  TechnologyInput.jsx not found. Create it in app/projects/components/')
     }
     
     expect(exists, 'TechnologyInput component is required for technology selection').toBe(true)
   })
->>>>>>> solution
 })
 
 describe('Week 1 Portfolio - Code Quality Tests', () => {
   it('should use Link component from next/link (not <a> tags)', () => {
     const pageFiles = [
-      'app/page.js',
-      'app/about/page.js',
-      'app/projects/page.js',
-      'app/contact/page.js',
+      'app/page.jsx',
+      'app/about/page.jsx',
+      'app/projects/page.jsx',
+      'app/contact/page.jsx',
     ]
 
     pageFiles.forEach(file => {
@@ -111,10 +107,10 @@ describe('Week 1 Portfolio - Code Quality Tests', () => {
 
   it('should use Image component from next/image for images', () => {
     const pageFiles = [
-      'app/page.js',
-      'app/about/page.js',
-      'app/projects/page.js',
-      'app/contact/page.js',
+      'app/page.jsx',
+      'app/about/page.jsx',
+      'app/projects/page.jsx',
+      'app/contact/page.jsx',
     ]
 
     pageFiles.forEach(file => {
@@ -140,10 +136,10 @@ describe('Week 1 Portfolio - Code Quality Tests', () => {
 
   it('should export default function from each page', () => {
     const pageFiles = [
-      'app/page.js',
-      'app/about/page.js',
-      'app/projects/page.js',
-      'app/contact/page.js',
+      'app/page.jsx',
+      'app/about/page.jsx',
+      'app/projects/page.jsx',
+      'app/contact/page.jsx',
     ]
 
     pageFiles.forEach(file => {
@@ -161,24 +157,24 @@ describe('Week 1 Portfolio - Code Quality Tests', () => {
 })
 
 describe('Week 1 Portfolio - Content Tests', () => {
-  it('layout.js should have html and body tags', () => {
-    const layoutPath = path.join(process.cwd(), 'app/layout.js')
+  it('layout.jsx should have html and body tags', () => {
+    const layoutPath = path.join(process.cwd(), 'app/layout.jsx')
     if (fs.existsSync(layoutPath)) {
       const content = fs.readFileSync(layoutPath, 'utf-8')
       
-      expect(content.includes('<html'), 'layout.js must include <html> tag').toBe(true)
-      expect(content.includes('<body'), 'layout.js must include <body> tag').toBe(true)
-      expect(content.includes('{children}'), 'layout.js must include {children}').toBe(true)
+      expect(content.includes('<html'), 'layout.jsx must include <html> tag').toBe(true)
+      expect(content.includes('<body'), 'layout.jsx must include <body> tag').toBe(true)
+      expect(content.includes('{children}'), 'layout.jsx must include {children}').toBe(true)
     }
   })
 
-  it('should have metadata in layout.js', () => {
-    const layoutPath = path.join(process.cwd(), 'app/layout.js')
+  it('should have metadata in layout.jsx', () => {
+    const layoutPath = path.join(process.cwd(), 'app/layout.jsx')
     if (fs.existsSync(layoutPath)) {
       const content = fs.readFileSync(layoutPath, 'utf-8')
       
       const hasMetadata = content.includes('metadata') || content.includes('title')
-      expect(hasMetadata, 'layout.js should export metadata').toBe(true)
+      expect(hasMetadata, 'layout.jsx should export metadata').toBe(true)
     }
   })
 })
@@ -214,18 +210,15 @@ describe('Week 1 Portfolio - Completion Summary', () => {
 
     // Check all required files
     const requiredFiles = [
-      'app/page.js',
-      'app/about/page.js',
-      'app/projects/page.js',
-      'app/contact/page.js',
-      'app/layout.js',
-      'app/components/Navbar.js',
-      'app/components/Footer.js',
-<<<<<<< HEAD
-=======
-      'app/projects/components/ProjectForm.js',
-      'app/projects/components/TechnologyInput.js',
->>>>>>> solution
+      'app/page.jsx',
+      'app/about/page.jsx',
+      'app/projects/page.jsx',
+      'app/contact/page.jsx',
+      'app/layout.jsx',
+      'app/components/Navbar.jsx',
+      'app/components/Footer.jsx',
+      'app/projects/components/ProjectForm.jsx',
+      'app/projects/components/TechnologyInput.jsx',
     ]
 
     requiredFiles.forEach(file => {

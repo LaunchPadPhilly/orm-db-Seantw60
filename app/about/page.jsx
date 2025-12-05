@@ -15,7 +15,7 @@ export default function About() {
           <div className="flex flex-col md:flex-row items-center gap-8 mb-8">
             <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-blue-300">
               <Image
-                src="/profile/profile-photo.png" // <-- Add your profile image
+                src="/Tech Rogue.jpg" // <-- Add your profile image
                 alt="Profile Photo"
                 fill
                 className="object-cover"
@@ -23,9 +23,9 @@ export default function About() {
             </div>
 
             <div>
-              <h2 className="text-4xl font-bold mb-2">Your Name</h2>
+              <h2 className="text-4xl font-bold mb-2">Sean Tate-Webb</h2>
               <p className="text-gray-600 text-lg">
-                ✏️ Write a short intro about yourself here. (3–5 sentences)
+                ✏️ I am a fantasy author and aspiring web developer with a passion for creating immersive digital experiences.
               </p>
             </div>
           </div>
@@ -46,10 +46,11 @@ export default function About() {
 
           {/* Goals Section */}
           <div className="mb-8">
-            <h3 className="text-2xl font-bold mb-4">My Goals</h3>
+            <h3 className="text-2xl font-bold mb-4">My Journey so far</h3>
             <p className="text-gray-700">
-              ✏️ Add a short section about what you’re learning, your aspirations,
-              or what you're aiming to do with your career or creativity.
+              ✏️ Recently, I have been Learning about Next.js and how to build full-stack applications using React. 
+              I aim to enhance my skills in web development and explore more about server-side rendering and static site generation. 
+              Additionally, I am interested in improving my understanding of APIs and how to integrate them effectively into web applications.
             </p>
           </div>
 

@@ -10,19 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// TODO: Create your Project model here
-// The model should include fields for:
-// - id (Int, @id, @default(autoincrement()))
-// - title (String)
-// - description (String)
-// - imageUrl (String, optional)
-// - projectUrl (String, optional)
-// - githubUrl (String, optional)
-// - technologies (String[])
-// - createdAt (DateTime, @default(now()))
-// - updatedAt (DateTime, @updatedAt)
-
-// Students should uncomment and implement this model:
 model Project {
   id           Int      @id @default(autoincrement())
   title        String

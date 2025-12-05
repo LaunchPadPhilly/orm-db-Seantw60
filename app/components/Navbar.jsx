@@ -12,9 +12,6 @@ export default function Navbar() {
           
           {/* Navigation links */}
           <div className="flex gap-6">
-            <Link href="/" className="hover:text-blue-400">
-              Home
-            </Link>
             <Link href="/about" className="hover:text-blue-400">
               About
             </Link>
