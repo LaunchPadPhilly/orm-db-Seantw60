@@ -1,11 +1,14 @@
 /**
  * @vitest-environment jsdom
+ * @jsx React.createElement
+ * @jsxFrag React.Fragment
  */
+import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import ProjectForm from '../app/projects/components/ProjectForm.js'
-import TechnologyInput from '../app/projects/components/TechnologyInput.js'
+import ProjectForm from '../app/projects/components/ProjectForm.jsx'
+import TechnologyInput from '../app/projects/components/TechnologyInput.jsx'
 
 describe('ProjectForm Component', () => {
   const mockOnSubmit = vi.fn()
@@ -188,16 +191,16 @@ describe('TechnologyInput Component', () => {
 
   it('adds technology when pressing Enter', () => {
     render(
-      <TechnologyInput 
-        technologies={[]} 
-        onChange={mockOnChange} 
+      <TechnologyInput
+        technologies={[]}
+        onChange={mockOnChange}
       />
     )
-    
+
     const input = screen.getByPlaceholderText(/Type a technology/)
     fireEvent.change(input, { target: { value: 'Angular' } })
-    fireEvent.keyPress(input, { key: 'Enter' })
-    
+    fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 })
+
     expect(mockOnChange).toHaveBeenCalledWith(['Angular'])
   })
 
@@ -217,14 +220,17 @@ describe('TechnologyInput Component', () => {
 
   it('displays selected technologies with remove buttons', () => {
     render(
-      <TechnologyInput 
-        technologies={['React', 'JavaScript']} 
-        onChange={mockOnChange} 
+      <TechnologyInput
+        technologies={['React', 'JavaScript']}
+        onChange={mockOnChange}
       />
     )
-    
-    expect(screen.getByText('React')).toBeInTheDocument()
-    expect(screen.getByText('JavaScript')).toBeInTheDocument()
+
+    // Use getAllByText since these appear both as selected tags and as quick-add buttons
+    const reactElements = screen.getAllByText('React')
+    expect(reactElements.length).toBeGreaterThan(0)
+    const jsElements = screen.getAllByText('JavaScript')
+    expect(jsElements.length).toBeGreaterThan(0)
     expect(screen.getAllByLabelText(/Remove/).length).toBe(2)
   })
 

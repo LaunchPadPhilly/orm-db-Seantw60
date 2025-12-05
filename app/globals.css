@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -24,4 +22,80 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* ---------- Animated Gradient Background ---------- */
+
+/* Bold, colorful animated gradient */
+.animated-bg {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(270deg, #0ea5e9 0%, #8b5cf6 33%, #f472b6 66%, #06b6d4 100%);
+  background-size: 800% 800%;
+  animation: gradientShift 18s ease infinite;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optional overlay so text remains readable */
+.animated-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 8, 8, 0.18); /* tweak opacity as needed */
+  pointer-events: none;
+}
+
+/* Subtle (lighter) animated gradient if you want something calmer */
+.animated-bg-subtle {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(90deg, rgba(14,165,233,0.10), rgba(139,92,246,0.08), rgba(244,114,182,0.07));
+  background-size: 600% 600%;
+  animation: gradientShift 30s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ---------- Decorative animated shapes (optional) ---------- */
+/* Small, subtle floating blobs using radial-gradient — purely decorative */
+.animated-bg .bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.18;
+  animation: float 12s ease-in-out infinite;
+  pointer-events:none;
+}
+.animated-bg .bg-blob.one  { width: 360px; height: 360px; left: -90px; top: -40px; background: radial-gradient(circle at 30% 30%, rgba(14,165,233,0.9), rgba(14,165,233,0.05)); }
+.animated-bg .bg-blob.two  { width: 320px; height: 320px; right: -80px; top: 80px; background: radial-gradient(circle at 70% 70%, rgba(139,92,246,0.9), rgba(139,92,246,0.04)); }
+.animated-bg .bg-blob.three{ width: 260px; height: 260px; left: 20%; bottom: -120px; background: radial-gradient(circle at 50% 50%, rgba(244,114,182,0.9), rgba(244,114,182,0.03)); }
+
+@keyframes float {
+  0%   { transform: translateY(0) translateX(0) scale(1); }
+  50%  { transform: translateY(-18px) translateX(8px) scale(1.02); }
+  100% { transform: translateY(0) translateX(0) scale(1); }
+}
+
+/* ---------- Accessibility: Respect reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .animated-bg,
+  .animated-bg-subtle,
+  .animated-bg .bg-blob {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------- Utility helpers (optional) ---------- */
+/* If you need a darker overlay for readability, use this helper */
+.bg-dim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  pointer-events: none;
 }

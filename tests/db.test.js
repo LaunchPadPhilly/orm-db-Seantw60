@@ -1,19 +1,11 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 describe('Database Schema and Operations', () => {
-  // Clean up test data before and after each test
-  beforeEach(async () => {
-    await prisma.project.deleteMany({
-      where: {
-        title: { contains: "Test DB" }
-      }
-    });
-  });
-
-  afterEach(async () => {
+  // Clean up ALL test data after all tests complete
+  afterAll(async () => {
     await prisma.project.deleteMany({
       where: {
         title: { contains: "Test DB" }
@@ -162,6 +154,15 @@ describe('Database Schema and Operations', () => {
             technologies: ["Angular", "NestJS"]
           }
         ]
+      });
+    });
+
+    afterEach(async () => {
+      // Clean up this block's test data after each test
+      await prisma.project.deleteMany({
+        where: {
+          title: { contains: "Test DB Query" }
+        }
       });
     });
 

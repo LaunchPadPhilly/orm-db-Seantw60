@@ -14,16 +14,7 @@ const testProject = {
 };
 
 describe('API Routes - Projects', () => {
-  // Clean up test data before and after each test
-  beforeEach(async () => {
-    // Clean up any existing test data
-    await prisma.project.deleteMany({
-      where: {
-        title: { contains: "Test" }
-      }
-    });
-  });
-
+  // Clean up test data after each test
   afterEach(async () => {
     // Clean up test data after each test
     await prisma.project.deleteMany({
